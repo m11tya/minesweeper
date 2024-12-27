@@ -19,7 +19,7 @@ scripts:
   - name: Build ipa for distribution
     script: | 
       xcode-project build-ipa \
-        --workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
+        --project "MyXcodeProject.xcodeproj"
         --scheme "$XCODE_SCHEME"
 artifacts:
   - build/ios/ipa/*.ipa
