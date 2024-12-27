@@ -26,3 +26,35 @@ artifacts:
   - /tmp/xcodebuild_logs/*.log
   - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
   - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+
+  workflows:
+  ios-workflow:
+    name: Build iOS app
+    max_build_duration: 120
+    environment:
+      xcode: latest # Убедись, что версия Xcode актуальна
+      cocoapods: default
+      vars:
+        - key: DEVELOPMENT_TEAM
+          value: "ТВОЙ_TEAM_ID" # Вставь ID своей команды Apple
+    scripts:
+      - name: Install dependencies
+        script: |
+          gem install cocoapods
+          pod install
+      - name: Build the app
+        script: |
+          xcodebuild -workspace MyApp.xcworkspace \
+          -scheme MyApp \
+          -sdk iphoneos \
+          -configuration Release \
+          archive \
+          -archivePath $HOME/build/MyApp.xcarchive
+
+          xcodebuild -exportArchive \
+          -archivePath $HOME/build/MyApp.xcarchive \
+          -exportOptionsPlist exportOptions.plist \
+          -exportPath $HOME/build
+    artifacts:
+      - $HOME/build/*.ipa # Сохраняем IPA файл
+
